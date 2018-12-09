@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #box{
+            width:350px;
+            height:350px;
+            position: relative;
+            border:1px solid black;
+            float:left;
+            margin-right:100px;
+        }
+        #box img{
+            width:100%;
+            height:100%;
+        }
+        #mark{
+            width:175px;
+            height:175px;
+            background: rgba(0,0,0,0.3);
+            position: absolute;
+            left:0;
+            top:0;
+            cursor: move;
+            display: none;
+        }
+        #bigBox {
+            width:350px;
+            height:350px;
+            border:1px solid black;
+            position: relative;
+            overflow: hidden;
+            float:left;
+            display: none;
+        }
+        #bigBox img{
+            position: absolute;
+            width:700px;
+            height:700px;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <img src="img/iphone.jpg" alt="">
+    <div id="mark"></div>
+</div>
+<div id="bigBox">
+    <img src="img/iphone_big.jpg" alt="" id="img">
+</div>
+<script>
+    class Fdj{
+        constructor(box,bigBox){
+            this.box = document.getElementById(box);
+            this.sImg = this.box.getElementsByTagName("img")[0];
+            this.mark = document.getElementById("mark");
+            this.bigBox = document.getElementById(bigBox);
+            this.bImg = document.getElementById("img");
+            this.ll = 0;
+            this.tt = 0;
+            this.right = this.box.getBoundingClientRect().right;
+        }
+        //让右边的大图进行移动
+        mouseEnter(){//当鼠标移入
+            this.box.addEventListener("mouseenter",this.show.bind(this));
+        }
+        show(ev){//当鼠标移入后触发的函数
+            this.mark.style.display = "block";
+            this.bigBox.style.display = "block";
+        }
+        mouseMove(){
+            this.box.addEventListener("mousemove",this.move.bind(this));
+        }
+        move(ev){
+            //可以让阴影移动
+            this.ll = ev.pageX - this.mark.clientWidth/2;
+            this.tt = ev.pageY - this.mark.clientHeight/2;
+            if(this.ll < 0){
+                this.ll = 0;
+            }else if(this.ll > this.right - this.mark.clientWidth - 1){
+                this.ll = this.right - this.mark.clientWidth - 1;
+            }
+            if(this.tt < 0){
+                this.tt = 0;
+            }else if(this.tt > this.box.clientHeight - this.mark.offsetHeight -1){
+                this.tt = this.box.clientHeight - this.mark.offsetHeight - 1;
+            }
+            this.mark.style.left = this.ll + 'px';
+            this.mark.style.top = this.tt + 'px';
+
+            //求得比例
+            this.scaleX = this.ll / (this.box.clientWidth - this.mark.clientWidth - 1) ;
+            this.scaleY = this.tt / (this.box.clientHeight - this.mark.clientHeight - 1);
+            // console.log(this.scaleX,this.scaleY);
+            this.rightMove();
+        }
+        rightMove(){
+            this.bImg.style.left = this.scaleX*(this.bigBox.clientWidth - this.bImg.clientWidth)+ 'px';
+            this.bImg.style.top = this.scaleY*(this.bigBox.clientWidth - this.bImg.clientWidth)+ 'px';
+        }
+        mouseOut(){//当鼠标移出后触发的函数
+            this.box.addEventListener("mouseleave",this.out.bind(this));
+        }
+        out(){//当鼠标移出后触发的函数
+            this.mark.style.display = "none";
+            this.bigBox.style.display = "none";
+        }  
+    }
+    let ff = new Fdj("box","bigBox");
+    ff.mouseEnter();
+    ff.mouseMove();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>汉字排序</title>
+    <style>
+        body{
+            background:url(img/5.jpg) no-repeat 0px -20px;
+            background-size: 100%;
+            
+        }
+        *{
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+        #container{
+            width:500px;
+            height:500px;
+            background-color: #11385f;
+            position: absolute;
+            top:50%;
+            left: 50%;
+            margin-left: -20px;
+            margin-top: -250px;
+            opacity:0.9;
+            overflow: hidden;
+            padding: 10px;
+
+        }
+        .ul{
+            width:400px;
+            /* background-color: blue; */
+            padding: 50px;
+            overflow: hidden;
+            margin-left: 10px;
+            position: absolute;
+
+        }
+        .ul li{
+            width:20px;
+            height:50px;
+            float: left;
+            /* background-color: aqua; */
+            list-style: none;
+            color:wheat;
+            font-size: 20px;
+            /* letter-spacing: 2em; */
+            /* text-indent: 2em; */
+            margin-right: 60px;
+        }
+        .ul::after{
+            clear: both;
+            content: "";
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id = "container">
+        <!-- <ul class = "ul">
+            
+        </ul> -->
+    </div>
+    <script>
+
+        let str = "张艺兴,梦不落雨林,努力努力再努力,你是我想活成的样子";
+        let ary = str.split("");  //["张"，"艺","兴","努",....]
+
+        let container = document.getElementById("container");
+        // console.dir(container);
+        let ul = document.getElementsByClassName("ul")[0];
+        let cWidth = parseFloat(getComputedStyle(container).width);
+        let cHeight = parseFloat(getComputedStyle(container).height);
+        let divs;
+        
+        //得到随机位置
+        function randomPosition(ary){
+            ary.forEach((e,i)=>{
+                // console.log(1);
+                let oneDiv = document.createElement("div");
+                // console.log(oneDiv)
+                // console.log(container)
+                oneDiv.style.width = "40px";
+                oneDiv.style.height = "40px";
+                // oneDiv.style.backgroundColor = "red";
+                oneDiv.style.position = "absolute";
+                oneDiv.style.fontSize = "20px";
+                oneDiv.style.color = "white";
+                oneDiv.style.top = Math.random()*cHeight + "px";//随机的位置
+                oneDiv.style.left = Math.random()*cWidth + "px";
+                oneDiv.innerHTML = e;
+                container.appendChild(oneDiv);//把一个div添加到container中
+                
+            });
+            divs = Array.from(container.getElementsByTagName("div"));
+        }
+
+
+        //点击之后才会出现完整的排序
+        function render(ary){
+            let temp = "";
+            let ul = document.createElement("ul");
+            ul.className = "ul";
+            container.appendChild(ul);
+            ary.forEach((ele,index)=>{
+                temp += `<li>${ele}</li>`;
+            })
+            // ul.appendChild(temp);
+            ul.innerHTML = temp;
+        }
+
+
+        randomPosition(ary);  
+
+        //滑动到容器时，会随机变换位置
+        container.onmouseover = function(){
+            divs.forEach((e,i)=>{
+                e.style.top = Math.random()*cHeight + "px";//随机的位置
+                e.style.left = Math.random()*cWidth + "px";
+            })
+         }
+        let sign = false;
+        //当点击时，会出现排序的内容，再次点击，又会随机排序
+        container.onclick = function (){
+            if(sign){
+                console.log(1)
+                container.innerHTML = "";
+                randomPosition(ary);
+                sign = false;
+            }
+            else {
+                container.innerHTML = "";
+                render(ary);
+                sign = true;
+            }
+        }
+
+    </script>
+</body>
+</html>
